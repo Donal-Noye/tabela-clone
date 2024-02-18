@@ -1,0 +1,53 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Restaurant {
+  id           String     @id @default(cuid())
+  name         String
+  password     String
+  address      String
+  capacity     Int
+  email        String
+  phoneNumber  String
+  country      String
+  dining_areas DiningArea @relation(fields: [diningAreaId], references: [id])
+  diningAreaId String
+}
+
+model DiningArea {
+  id         String         @id @default(cuid())
+  name       String
+  type       DiningAreaEnum
+  tables     Table[]
+  Restaurant Restaurant[]
+}
+
+enum DiningAreaEnum {
+  INDOOR
+  OUTDOOR
+  TERRACE
+  PRIVATE_DINING
+  OUTDOOR_COURTYARD
+  ROOT_GARDEN
+  OUTDOOR_SMOOKING
+  OUTDOOT_NON_SMOKING
+  INDOOR_BAR_AREA
+}
+
+model Table {
+  id            String     @id @default(cuid())
+  name          String
+  minimumCovers Int
+  maximumCovers Int
+  diningArea    DiningArea @relation(fields: [diningAreaId], references: [id])
+  diningAreaId  String
+}
